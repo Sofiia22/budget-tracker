@@ -94,12 +94,8 @@ export default function WelcomeScreen() {
   };
 
   const handleSkip = () => {
-    Alert.alert(
-      "Home screen",
-      "Головний Advent-календар створимо після екрана вибору мови.",
-    );
+    router.replace("/home");
   };
-
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <StatusBar style="light" />

@@ -76,12 +76,7 @@ export default function LanguageScreen() {
   }
 
   const handleContinue = () => {
-    const language = LANGUAGES.find((item) => item.id === selectedLanguage);
-
-    Alert.alert(
-      "Language selected",
-      `${language?.name} збережено. Наступним кроком створимо головний Advent-календар.`,
-    );
+    router.replace("/home");
   };
 
   return (
