@@ -21,6 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AdventDoor, DoorState } from "../components/advent/AdventDoor";
 import { ProgressCard } from "../components/advent/ProgressCard";
+import { router } from "expo-router";
 
 const COLORS = {
   night: "#070E1B",
@@ -77,12 +78,12 @@ export default function HomeScreen() {
   }
 
   const openDay = (day: number) => {
-    Alert.alert(
-      `Day ${day}`,
-      day === 5
-        ? "Наступним етапом створимо біблійну історію п’ятого дня."
-        : "Цей день уже завершений.",
-    );
+    if (day === 5) {
+      router.push("/day-5");
+      return;
+    }
+
+    Alert.alert(`Day ${day}`, "Ця історія буде додана на наступному етапі.");
   };
 
   return (
