@@ -20,6 +20,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AdventDoor, DoorState } from "../components/advent/AdventDoor";
+import { ProgressCard } from "../components/advent/ProgressCard";
 
 const COLORS = {
   night: "#070E1B",
@@ -171,7 +172,6 @@ export default function HomeScreen() {
 
                 <Text style={styles.heroReference}>LUKE 2:4 · MICAH 5:2</Text>
               </View>
-
               <Pressable onPress={() => openDay(5)} style={styles.dayChip}>
                 <Text style={styles.dayChipText}>Day 5</Text>
                 <Ionicons
@@ -226,6 +226,8 @@ export default function HomeScreen() {
               </View>
             ))}
           </View>
+
+          <ProgressCard />
 
           <Pressable
             onPress={() => openDay(5)}
