@@ -8,6 +8,7 @@ import { Lora_400Regular_Italic } from "@expo-google-fonts/lora";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 import {
   Alert,
   ImageBackground,
@@ -89,10 +90,7 @@ export default function WelcomeScreen() {
   }
 
   const handleBegin = () => {
-    Alert.alert(
-      "Your journey begins",
-      "Наступним кроком ми створимо екран вибору мови.",
-    );
+    router.push("/language");
   };
 
   const handleSkip = () => {
