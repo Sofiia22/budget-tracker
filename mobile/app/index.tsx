@@ -10,7 +10,6 @@ import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import {
-  Alert,
   ImageBackground,
   Pressable,
   ScrollView,
@@ -19,6 +18,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { getTranslations } from "../i18n/translations";
+import { useAdvent } from "../state/AdventContext";
 
 const COLORS = {
   night: "#070E1B",
@@ -78,6 +80,9 @@ function FeatureRow({
 }
 
 export default function WelcomeScreen() {
+  const { selectedLanguage, isHydrated } = useAdvent();
+  const t = getTranslations(selectedLanguage);
+
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
     CrimsonPro_600SemiBold,
@@ -85,7 +90,7 @@ export default function WelcomeScreen() {
     Lora_400Regular_Italic,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !isHydrated) {
     return <View style={styles.loadingScreen} />;
   }
 
@@ -126,7 +131,7 @@ export default function WelcomeScreen() {
           ))}
 
           <Text style={styles.headerCross}>✦</Text>
-          <Text style={styles.headerLabel}>ADVENT · 2026</Text>
+          <Text style={styles.headerLabel}>{t.adventYear}</Text>
         </LinearGradient>
 
         <View style={styles.content}>
@@ -154,7 +159,7 @@ export default function WelcomeScreen() {
 
             <View style={styles.heroLabel}>
               <Text style={styles.heroLabelText}>
-                24 DAYS · GENESIS TO REVELATION
+                {t.daysGenesisToRevelation}
               </Text>
             </View>
           </ImageBackground>
@@ -165,41 +170,40 @@ export default function WelcomeScreen() {
             <View style={styles.dividerLine} />
           </View>
 
-          <Text style={styles.eyebrow}>A FAMILY ADVENT EXPERIENCE</Text>
+          <Text style={styles.eyebrow}>
+            {t.familyAdventExperience}
+          </Text>
 
           <Text style={styles.title}>
-            Welcome to{"\n"}
+            {t.welcomeTo}{"\n"}
             <Text style={styles.titleStrong}>The Promised Savior</Text>
           </Text>
 
-          <Text style={styles.subtitle}>
-            Take a 24-day journey through God&apos;s promises that lead to Jesus
-            Christ.
-          </Text>
+          <Text style={styles.subtitle}>{t.welcomeDescription}</Text>
 
           <View style={styles.features}>
             <FeatureRow
               icon="book-outline"
               iconColor={COLORS.olive}
               iconBackground="rgba(111,120,67,0.12)"
-              title="Daily Bible Story"
-              description="One story per day, told for ages 5–12"
+              title={t.dailyBibleStory}
+              description={t.dailyBibleStoryDescription}
             />
 
             <FeatureRow
               icon="heart-outline"
               iconColor={COLORS.gold}
               iconBackground="rgba(212,175,55,0.14)"
-              title="See Jesus in Every Story"
-              description="Every passage points forward to Christ"
+              title={t.seeJesusInEveryStory}
+              description={t.seeJesusDescription}
             />
 
             <FeatureRow
               icon="people-outline"
               iconColor={COLORS.blue}
               iconBackground="rgba(31,54,92,0.11)"
-              title="Read Together as a Family"
-              description="Questions, prayers, and activities included"
+              title={t.readTogether}
+              description={t.readTogetherDescription}
             />
           </View>
 
@@ -216,16 +220,18 @@ export default function WelcomeScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.primaryButtonGradient}
             >
-              <Text style={styles.primaryButtonText}>Begin Your Journey</Text>
+              <Text style={styles.primaryButtonText}>
+                {t.beginJourney}
+              </Text>
               <Ionicons name="arrow-forward" size={20} color={COLORS.night} />
             </LinearGradient>
           </Pressable>
 
           <Pressable onPress={handleSkip} style={styles.skipButton}>
-            <Text style={styles.skipText}>Skip for now</Text>
+            <Text style={styles.skipText}>{t.skipForNow}</Text>
           </Pressable>
 
-          <Text style={styles.footer}>The Promised Savior · Advent App</Text>
+          <Text style={styles.footer}>{t.footer}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

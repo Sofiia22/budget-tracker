@@ -1,3 +1,5 @@
+import { DAY_5_RU } from "./day5.ru";
+import { DAY_5_UK } from "./day5.uk";
 export const DAY_5 = {
   day: 5,
   book: "Genesis 22",
@@ -52,4 +54,13 @@ export const DAY_5 = {
 
     `Write each one on a small piece of paper and fold it. Keep the papers near your Advent candles as a daily reminder: “The Lord Will Provide.”`,
   ],
+  captions: {
+    journey: "The land of Moriah — three days’ journey from Beersheba",
+    lamb: "The Lord will provide — the ram caught in the thicket",
+  },
+} as const;
+export const DAY_5_BY_LANGUAGE = {
+  en: DAY_5,
+  uk: DAY_5_UK,
+  ru: DAY_5_RU,
 } as const;

@@ -20,6 +20,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { getTranslations } from "../i18n/translations";
+
 const COLORS = {
   night: "#070E1B",
   navy: "#0F2040",
@@ -59,7 +61,12 @@ const LANGUAGES: Language[] = [
 ];
 
 export default function LanguageScreen() {
-  const { selectedLanguage, setLanguage } = useAdvent();
+  const {
+    selectedLanguage,
+    setLanguage,
+    isHydrated,
+  } = useAdvent();
+  const t = getTranslations(selectedLanguage);
 
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
@@ -68,7 +75,7 @@ export default function LanguageScreen() {
     Lora_400Regular_Italic,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !isHydrated) {
     return <View style={styles.loadingScreen} />;
   }
 
@@ -104,7 +111,7 @@ export default function LanguageScreen() {
           <Pressable
             onPress={() => router.back()}
             style={styles.backButton}
-            accessibilityLabel="Go back"
+            accessibilityLabel={t.goBack}
           >
             <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
           </Pressable>
@@ -129,13 +136,11 @@ export default function LanguageScreen() {
           </View>
 
           <Text style={styles.title}>
-            Choose Your{"\n"}
-            <Text style={styles.titleStrong}>Language</Text>
+            {t.chooseYour}{"\n"}
+            <Text style={styles.titleStrong}>{t.languageTitle}</Text>
           </Text>
 
-          <Text style={styles.subtitle}>
-            You can change this later in Settings.
-          </Text>
+          <Text style={styles.subtitle}>{t.languageSubtitle}</Text>
 
           <View style={styles.languageList} accessibilityRole="radiogroup">
             {LANGUAGES.map((language) => {
@@ -201,17 +206,15 @@ export default function LanguageScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.continueGradient}
             >
-              <Text style={styles.continueText}>Continue</Text>
+              <Text style={styles.continueText}>{t.continue}</Text>
 
               <Ionicons name="chevron-forward" size={19} color={COLORS.night} />
             </LinearGradient>
           </Pressable>
 
-          <Text style={styles.journeyText}>
-            A 24-Day Christmas Scripture Journey
-          </Text>
+          <Text style={styles.journeyText}>{t.journeyBegins}</Text>
 
-          <Text style={styles.footer}>The Promised Savior · Advent App</Text>
+          <Text style={styles.footer}>{t.footer}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

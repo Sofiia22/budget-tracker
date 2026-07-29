@@ -22,7 +22,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ContentCard } from "../components/advent/ContentCard";
-import { DAY_5 } from "../data/day5";
+import { DAY_5_BY_LANGUAGE } from "../data/day5";
+import { getTranslations } from "../i18n/translations";
 import { useAdvent } from "../state/AdventContext";
 
 const COLORS = {
@@ -53,7 +54,14 @@ function StoryImage({ source, caption }: StoryImageProps) {
 }
 
 export default function DayFiveScreen() {
-  const { completeDay, isDayCompleted } = useAdvent();
+  const {
+    completeDay,
+    isDayCompleted,
+    selectedLanguage,
+    isHydrated,
+  } = useAdvent();
+  const t = getTranslations(selectedLanguage);
+  const dayContent = DAY_5_BY_LANGUAGE[selectedLanguage];
   const completed = isDayCompleted(5);
 
   const [fontsLoaded] = useFonts({
@@ -63,7 +71,7 @@ export default function DayFiveScreen() {
     Lora_400Regular_Italic,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !isHydrated) {
     return <View style={styles.loadingScreen} />;
   }
 
@@ -91,7 +99,7 @@ export default function DayFiveScreen() {
       <View style={styles.navigation}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={20} color={COLORS.gold} />
-          <Text style={styles.backText}>December</Text>
+          <Text style={styles.backText}>{t.december}</Text>
         </Pressable>
 
         <Text style={styles.navigationTitle}>The Promised Savior</Text>
@@ -119,26 +127,30 @@ export default function DayFiveScreen() {
           />
 
           <View style={styles.dayPill}>
-            <Text style={styles.dayPillText}>DAY 5 OF 24</Text>
+            <Text style={styles.dayPillText}>
+              {t.dayOfTwentyFour(5)}
+            </Text>
           </View>
 
           <View style={styles.heroContent}>
-            <Text style={styles.book}>{DAY_5.book}</Text>
-            <Text style={styles.theme}>{DAY_5.theme}</Text>
+            <Text style={styles.book}>{dayContent.book}</Text>
+            <Text style={styles.theme}>{dayContent.theme}</Text>
 
-            <Text style={styles.heroTitle}>God Provides{"\n"}the Lamb</Text>
+            <Text style={styles.heroTitle}>{dayContent.title}</Text>
           </View>
         </ImageBackground>
 
         <View style={styles.content}>
           <ContentCard
-            title="Today’s Scripture"
+            title={t.todaysScripture}
             icon="book-outline"
             accent="gold"
           >
-            <Text style={styles.scriptureReference}>{DAY_5.reference}</Text>
+            <Text style={styles.scriptureReference}>
+              {dayContent.reference}
+            </Text>
 
-            <Text style={styles.keyVerse}>{DAY_5.keyVerse}</Text>
+            <Text style={styles.keyVerse}>{dayContent.keyVerse}</Text>
           </ContentCard>
 
           <View style={styles.sectionHeading}>
@@ -147,27 +159,27 @@ export default function DayFiveScreen() {
             <View style={styles.sectionLine} />
           </View>
 
-          <Text style={styles.storyHeading}>The Story</Text>
+          <Text style={styles.storyHeading}>{t.theStory}</Text>
 
-          <Text style={styles.paragraph}>{DAY_5.story[0]}</Text>
+          <Text style={styles.paragraph}>{dayContent.story[0]}</Text>
 
-          <Text style={styles.paragraph}>{DAY_5.story[1]}</Text>
+          <Text style={styles.paragraph}>{dayContent.story[1]}</Text>
 
           <StoryImage
             source={require("../assets/images/day5-moriah-journey.jpg")}
-            caption="The land of Moriah — three days’ journey from Beersheba"
+            caption={dayContent.captions.journey}
           />
 
-          <Text style={styles.paragraph}>{DAY_5.story[2]}</Text>
+          <Text style={styles.paragraph}>{dayContent.story[2]}</Text>
 
-          <Text style={styles.paragraph}>{DAY_5.story[3]}</Text>
+          <Text style={styles.paragraph}>{dayContent.story[3]}</Text>
 
           <StoryImage
             source={require("../assets/images/day5-lambs.jpg")}
-            caption="The Lord will provide — the ram caught in the thicket"
+            caption={dayContent.captions.lamb}
           />
 
-          <Text style={styles.paragraph}>{DAY_5.story[4]}</Text>
+          <Text style={styles.paragraph}>{dayContent.story[4]}</Text>
 
           <LinearGradient
             colors={[COLORS.navy, COLORS.night]}
@@ -179,31 +191,33 @@ export default function DayFiveScreen() {
                 size={17}
                 color={COLORS.lightGold}
               />
-              <Text style={styles.christLabelText}>CHRIST CONNECTION</Text>
+              <Text style={styles.christLabelText}>
+                {t.christConnection}
+              </Text>
             </View>
 
             <Text style={styles.christTitle}>
-              {DAY_5.christConnection.title}
+              {dayContent.christConnection.title}
             </Text>
 
-            {DAY_5.christConnection.paragraphs.map((paragraph) => (
+            {dayContent.christConnection.paragraphs.map((paragraph) => (
               <Text key={paragraph} style={styles.christParagraph}>
                 {paragraph}
               </Text>
             ))}
 
             <Text style={styles.christReferences}>
-              {DAY_5.christConnection.references}
+              {dayContent.christConnection.references}
             </Text>
           </LinearGradient>
 
           <ContentCard
-            title="Think Together"
+            title={t.thinkTogether}
             icon="chatbubbles-outline"
             accent="olive"
           >
             <View style={styles.questions}>
-              {DAY_5.questions.map((question, index) => (
+              {dayContent.questions.map((question, index) => (
                 <View key={question} style={styles.question}>
                   <View style={styles.questionNumber}>
                     <Text style={styles.questionNumberText}>{index + 1}</Text>
@@ -216,11 +230,11 @@ export default function DayFiveScreen() {
           </ContentCard>
 
           <ContentCard
-            title="A Prayer Together"
+            title={t.prayerTogether}
             icon="heart-outline"
             accent="gold"
           >
-            {DAY_5.prayer.map((paragraph) => (
+            {dayContent.prayer.map((paragraph) => (
               <Text key={paragraph} style={styles.cardParagraph}>
                 {paragraph}
               </Text>
@@ -228,11 +242,11 @@ export default function DayFiveScreen() {
           </ContentCard>
 
           <ContentCard
-            title="Family Challenge"
+            title={t.familyChallenge}
             icon="people-outline"
             accent="navy"
           >
-            {DAY_5.familyChallenge.map((paragraph) => (
+            {dayContent.familyChallenge.map((paragraph) => (
               <Text key={paragraph} style={styles.cardParagraph}>
                 {paragraph}
               </Text>
@@ -264,12 +278,12 @@ export default function DayFiveScreen() {
                   completed && styles.completeTextDone,
                 ]}
               >
-                {completed ? "Day 5 Complete" : "Complete Day 5"}
+                {completed ? t.dayComplete(5) : t.completeDay(5)}
               </Text>
             </LinearGradient>
           </Pressable>
 
-          <Text style={styles.footer}>The Promised Savior · Advent App</Text>
+          <Text style={styles.footer}>{t.footer}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
