@@ -4,7 +4,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Alert, Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -12,6 +20,7 @@ import {
   scheduleDailyReminder,
   scheduleTestNotification,
 } from "../services/notifications";
+import { useAdvent } from "../state/AdventContext";
 
 const ENABLED_KEY = "@advent/reminder-enabled";
 const IDENTIFIER_KEY = "@advent/reminder-identifier";
@@ -20,7 +29,14 @@ const TIME_KEY = "@advent/reminder-time";
 const DEFAULT_TIME = new Date();
 DEFAULT_TIME.setHours(8, 0, 0, 0);
 
+const LANGUAGE_NAMES = {
+  en: "English",
+  uk: "Українська",
+  ru: "Русский",
+};
+
 export default function SettingsScreen() {
+  const { selectedLanguage, resetProgress } = useAdvent();
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderIdentifier, setReminderIdentifier] = useState<string | null>(
     null,
@@ -132,6 +148,26 @@ export default function SettingsScreen() {
     );
   };
 
+  const confirmResetProgress = () => {
+    Alert.alert(
+      "Reset Advent journey?",
+      "Your completed days will return to the beginning. Your language and reminder settings will remain unchanged.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: () => {
+            void resetProgress();
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -146,7 +182,10 @@ export default function SettingsScreen() {
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.sectionTitle}>DAILY JOURNEY</Text>
 
         <View style={styles.card}>
@@ -199,17 +238,48 @@ export default function SettingsScreen() {
           onPress={() => void sendTestNotification()}
           style={styles.testButton}
         >
+          <Ionicons name="paper-plane-outline" size={19} color="#FFFFFF" />
+
+          <Text style={styles.testButtonText}>Send test notification</Text>
+        </Pressable>
+
+        <Text style={[styles.sectionTitle, styles.preferencesTitle]}>
+          PREFERENCES
+        </Text>
+
+        <Pressable
+          onPress={() => router.push("./language")}
+          style={styles.languageCard}
+        >
+          <View style={styles.icon}>
+            <Ionicons name="language-outline" size={24} color="#D4AF37" />
+          </View>
+
+          <View style={styles.textContainer}>
+            <Text style={styles.cardTitle}>Language</Text>
+            <Text style={styles.cardSubtitle}>
+              {LANGUAGE_NAMES[selectedLanguage]}
+            </Text>
+          </View>
+
+          <Ionicons name="chevron-forward" size={22} color="#817D75" />
+        </Pressable>
+
+        <Pressable
+          onPress={confirmResetProgress}
+          style={styles.resetButton}
+        >
           <Ionicons
-            name="paper-plane-outline"
-            size={19}
-            color="#FFFFFF"
+            name="refresh-outline"
+            size={20}
+            color="#A4473E"
           />
 
-          <Text style={styles.testButtonText}>
-            Send test notification
+          <Text style={styles.resetButtonText}>
+            Reset Advent journey
           </Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -246,6 +316,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 24,
+    paddingBottom: 48,
   },
   sectionTitle: {
     marginBottom: 12,
@@ -314,6 +385,36 @@ const styles = StyleSheet.create({
   },
   testButtonText: {
     color: "#FFFFFF",
+    fontFamily: "CrimsonPro_600SemiBold",
+    fontSize: 18,
+  },
+  preferencesTitle: {
+    marginTop: 32,
+  },
+  languageCard: {
+    minHeight: 84,
+    padding: 18,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E8DEC9",
+  },
+  resetButton: {
+    minHeight: 54,
+    marginTop: 18,
+    borderRadius: 27,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 9,
+    backgroundColor: "#FFF7F4",
+    borderWidth: 1,
+    borderColor: "#E8C9C3",
+  },
+  resetButtonText: {
+    color: "#A4473E",
     fontFamily: "CrimsonPro_600SemiBold",
     fontSize: 18,
   },

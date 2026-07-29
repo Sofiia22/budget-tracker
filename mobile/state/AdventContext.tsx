@@ -136,11 +136,10 @@ export function AdventProvider({ children }: AdventProviderProps) {
   );
 
   const resetProgress = useCallback(async () => {
-    setSelectedLanguage(DEFAULT_LANGUAGE);
     setCompletedDays(DEFAULT_COMPLETED_DAYS);
 
     try {
-      await AsyncStorage.multiRemove([LANGUAGE_KEY, COMPLETED_DAYS_KEY]);
+      await AsyncStorage.removeItem(COMPLETED_DAYS_KEY);
     } catch (error) {
       console.warn("Could not reset Advent progress:", error);
     }
