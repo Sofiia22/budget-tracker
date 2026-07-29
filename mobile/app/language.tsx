@@ -9,9 +9,8 @@ import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { type LanguageId, useAdvent } from "../state/AdventContext";
 import {
-  Alert,
   ImageBackground,
   Pressable,
   ScrollView,
@@ -31,8 +30,6 @@ const COLORS = {
   muted: "#817D75",
   border: "#E8DEC9",
 };
-
-type LanguageId = "en" | "uk" | "ru";
 
 type Language = {
   id: LanguageId;
@@ -62,7 +59,7 @@ const LANGUAGES: Language[] = [
 ];
 
 export default function LanguageScreen() {
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageId>("en");
+  const { selectedLanguage, setLanguage } = useAdvent();
 
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
@@ -147,7 +144,9 @@ export default function LanguageScreen() {
               return (
                 <Pressable
                   key={language.id}
-                  onPress={() => setSelectedLanguage(language.id)}
+                  onPress={() => {
+                    void setLanguage(language.id);
+                  }}
                   accessibilityRole="radio"
                   accessibilityState={{ checked: selected }}
                   style={({ pressed }) => [

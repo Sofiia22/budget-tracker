@@ -9,7 +9,6 @@ import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
 import {
   Image,
   ImageBackground,
@@ -24,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ContentCard } from "../components/advent/ContentCard";
 import { DAY_5 } from "../data/day5";
+import { useAdvent } from "../state/AdventContext";
 
 const COLORS = {
   night: "#070E1B",
@@ -53,7 +53,8 @@ function StoryImage({ source, caption }: StoryImageProps) {
 }
 
 export default function DayFiveScreen() {
-  const [completed, setCompleted] = useState(false);
+  const { completeDay, isDayCompleted } = useAdvent();
+  const completed = isDayCompleted(5);
 
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
@@ -66,13 +67,13 @@ export default function DayFiveScreen() {
     return <View style={styles.loadingScreen} />;
   }
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (completed) {
       router.replace("/home");
       return;
     }
 
-    setCompleted(true);
+    await completeDay(5);
 
     setTimeout(() => {
       router.replace("/home");

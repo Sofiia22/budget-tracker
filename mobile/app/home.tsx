@@ -22,6 +22,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AdventDoor, DoorState } from "../components/advent/AdventDoor";
 import { ProgressCard } from "../components/advent/ProgressCard";
 import { router } from "expo-router";
+import { useAdvent } from "../state/AdventContext";
 
 const COLORS = {
   night: "#070E1B",
@@ -53,12 +54,16 @@ const STARS = [
   { top: 69, left: "91%", size: 2, opacity: 0.7 },
 ] as const;
 
-function getDoorState(day: number): DoorState {
-  if (day <= 4) {
+function getDoorState(
+  day: number,
+  completedDays: number[],
+  currentDay: number,
+): DoorState {
+  if (completedDays.includes(day)) {
     return "completed";
   }
 
-  if (day === 5) {
+  if (day === currentDay) {
     return "today";
   }
 
@@ -66,6 +71,8 @@ function getDoorState(day: number): DoorState {
 }
 
 export default function HomeScreen() {
+  const { completedDays, currentDay, isHydrated } = useAdvent();
+
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
     CrimsonPro_600SemiBold,
@@ -73,7 +80,7 @@ export default function HomeScreen() {
     Lora_400Regular_Italic,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !isHydrated) {
     return <View style={styles.loadingScreen} />;
   }
 
@@ -137,7 +144,7 @@ export default function HomeScreen() {
 
           <View style={styles.todayJourney}>
             <Text style={styles.todayJourneyText}>
-              TODAY&apos;S JOURNEY · DAY 5 OF 24
+              TODAY&apos;S JOURNEY · DAY {currentDay} OF 24
             </Text>
           </View>
         </LinearGradient>
@@ -173,8 +180,11 @@ export default function HomeScreen() {
 
                 <Text style={styles.heroReference}>LUKE 2:4 · MICAH 5:2</Text>
               </View>
-              <Pressable onPress={() => openDay(5)} style={styles.dayChip}>
-                <Text style={styles.dayChipText}>Day 5</Text>
+              <Pressable
+                onPress={() => openDay(currentDay)}
+                style={styles.dayChip}
+              >
+                <Text style={styles.dayChipText}>Day {currentDay}</Text>
                 <Ionicons
                   name="chevron-forward"
                   size={15}
@@ -213,7 +223,11 @@ export default function HomeScreen() {
             {DAY_ROWS.map((row, rowIndex) => (
               <View key={rowIndex} style={styles.calendarRow}>
                 {row.map((day) => {
-                  const state = getDoorState(day);
+                  const state = getDoorState(
+                    day,
+                    completedDays,
+                    currentDay,
+                  );
 
                   return (
                     <AdventDoor
@@ -228,10 +242,13 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          <ProgressCard />
+          <ProgressCard
+            currentDay={currentDay}
+            completedDays={completedDays.length}
+          />
 
           <Pressable
-            onPress={() => openDay(5)}
+            onPress={() => openDay(currentDay)}
             style={({ pressed }) => [
               styles.primaryButton,
               pressed && styles.buttonPressed,
