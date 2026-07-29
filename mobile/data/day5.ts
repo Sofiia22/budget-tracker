@@ -1,5 +1,7 @@
 import { DAY_5_RU } from "./day5.ru";
 import { DAY_5_UK } from "./day5.uk";
+import { type AdventStoryContent } from "./storyTypes";
+
 export const DAY_5 = {
   day: 5,
   book: "Genesis 22",
@@ -58,7 +60,8 @@ export const DAY_5 = {
     journey: "The land of Moriah — three days’ journey from Beersheba",
     lamb: "The Lord will provide — the ram caught in the thicket",
   },
-} as const;
+} as const satisfies AdventStoryContent;
+
 export const DAY_5_BY_LANGUAGE = {
   en: DAY_5,
   uk: DAY_5_UK,

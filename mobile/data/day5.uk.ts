@@ -1,3 +1,5 @@
+import { type AdventStoryContent } from "./storyTypes";
+
 export const DAY_5_UK = {
   day: 5,
   book: "Буття 22",
@@ -57,4 +59,4 @@ export const DAY_5_UK = {
     journey: "Край Морія — три дні подорожі від Беер-Шеви",
     lamb: "Господь подбає — баран, який заплутався в кущах",
   },
-} as const;
+} as const satisfies AdventStoryContent;
