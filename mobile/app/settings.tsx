@@ -21,6 +21,7 @@ import {
   scheduleTestNotification,
 } from "../services/notifications";
 import { useAdvent } from "../state/AdventContext";
+import { getTranslations } from "../i18n/translations";
 
 const ENABLED_KEY = "@advent/reminder-enabled";
 const IDENTIFIER_KEY = "@advent/reminder-identifier";
@@ -37,6 +38,7 @@ const LANGUAGE_NAMES = {
 
 export default function SettingsScreen() {
   const { selectedLanguage, resetProgress } = useAdvent();
+  const t = getTranslations(selectedLanguage);
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderIdentifier, setReminderIdentifier] = useState<string | null>(
     null,
@@ -88,8 +90,8 @@ export default function SettingsScreen() {
 
     if (!identifier) {
       Alert.alert(
-        "Notifications are disabled",
-        "Please allow notifications in your iPhone settings.",
+        t.notificationsDisabled,
+        t.notificationsDisabledMessage,
       );
       return;
     }
@@ -135,37 +137,30 @@ export default function SettingsScreen() {
     const scheduled = await scheduleTestNotification();
 
     if (!scheduled) {
-      Alert.alert(
-        "Notifications are disabled",
-        "Please allow notifications in your iPhone settings.",
-      );
+      Alert.alert(t.notificationsDisabled, t.notificationsDisabledMessage);
       return;
     }
 
     Alert.alert(
-      "Notification scheduled",
-      "Close or minimize the app. The notification will appear in 5 seconds.",
+      t.notificationScheduled,
+      t.notificationScheduledMessage,
     );
   };
 
   const confirmResetProgress = () => {
-    Alert.alert(
-      "Reset Advent journey?",
-      "Your completed days will return to the beginning. Your language and reminder settings will remain unchanged.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
+    Alert.alert(t.resetTitle, t.resetMessage, [
+      {
+        text: t.cancel,
+        style: "cancel",
+      },
+      {
+        text: t.reset,
+        style: "destructive",
+        onPress: () => {
+          void resetProgress();
         },
-        {
-          text: "Reset",
-          style: "destructive",
-          onPress: () => {
-            void resetProgress();
-          },
-        },
-      ],
-    );
+      },
+    ]);
   };
 
   return (
@@ -177,7 +172,7 @@ export default function SettingsScreen() {
           <Ionicons name="chevron-back" size={26} color="#0F2040" />
         </Pressable>
 
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title}>{t.settings}</Text>
 
         <View style={styles.placeholder} />
       </View>
@@ -186,7 +181,7 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionTitle}>DAILY JOURNEY</Text>
+        <Text style={styles.sectionTitle}>{t.dailyJourney}</Text>
 
         <View style={styles.card}>
           <View style={styles.settingRow}>
@@ -199,9 +194,9 @@ export default function SettingsScreen() {
             </View>
 
             <View style={styles.textContainer}>
-              <Text style={styles.cardTitle}>Daily reminder</Text>
+              <Text style={styles.cardTitle}>{t.dailyReminder}</Text>
               <Text style={styles.cardSubtitle}>
-                Receive a reminder for your Advent journey
+                {t.reminderDescription}
               </Text>
             </View>
 
@@ -219,7 +214,7 @@ export default function SettingsScreen() {
 
           {reminderEnabled && (
             <View style={styles.timeSection}>
-              <Text style={styles.timeLabel}>REMINDER TIME</Text>
+              <Text style={styles.timeLabel}>{t.reminderTime}</Text>
 
               <DateTimePicker
                 value={reminderTime}
@@ -240,11 +235,13 @@ export default function SettingsScreen() {
         >
           <Ionicons name="paper-plane-outline" size={19} color="#FFFFFF" />
 
-          <Text style={styles.testButtonText}>Send test notification</Text>
+          <Text style={styles.testButtonText}>
+            {t.sendTestNotification}
+          </Text>
         </Pressable>
 
         <Text style={[styles.sectionTitle, styles.preferencesTitle]}>
-          PREFERENCES
+          {t.preferences}
         </Text>
 
         <Pressable
@@ -256,7 +253,7 @@ export default function SettingsScreen() {
           </View>
 
           <View style={styles.textContainer}>
-            <Text style={styles.cardTitle}>Language</Text>
+            <Text style={styles.cardTitle}>{t.language}</Text>
             <Text style={styles.cardSubtitle}>
               {LANGUAGE_NAMES[selectedLanguage]}
             </Text>
@@ -265,19 +262,10 @@ export default function SettingsScreen() {
           <Ionicons name="chevron-forward" size={22} color="#817D75" />
         </Pressable>
 
-        <Pressable
-          onPress={confirmResetProgress}
-          style={styles.resetButton}
-        >
-          <Ionicons
-            name="refresh-outline"
-            size={20}
-            color="#A4473E"
-          />
+        <Pressable onPress={confirmResetProgress} style={styles.resetButton}>
+          <Ionicons name="refresh-outline" size={20} color="#A4473E" />
 
-          <Text style={styles.resetButtonText}>
-            Reset Advent journey
-          </Text>
+          <Text style={styles.resetButtonText}>{t.resetJourney}</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>

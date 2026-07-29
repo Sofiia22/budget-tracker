@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
+import { getTranslations } from "../../i18n/translations";
+import { useAdvent } from "../../state/AdventContext";
 
 type ProgressCardProps = {
   currentDay?: number;
@@ -29,13 +31,15 @@ export function ProgressCard({
   completedDays = 4,
   totalDays = 24,
 }: ProgressCardProps) {
+  const { selectedLanguage } = useAdvent();
+  const t = getTranslations(selectedLanguage);
   const progress = currentDay / totalDays;
   const strokeOffset = CIRCUMFERENCE * (1 - progress);
   const remainingDays = totalDays - currentDay;
 
   return (
     <View style={styles.card}>
-      <Text style={styles.eyebrow}>YOUR ADVENT JOURNEY</Text>
+      <Text style={styles.eyebrow}>{t.yourAdventJourney}</Text>
 
       <View style={styles.progressSection}>
         <View style={styles.ringContainer}>
@@ -90,19 +94,21 @@ export function ProgressCard({
 
         <View style={styles.summary}>
           <Text style={styles.summaryTitle}>
-            Day {currentDay} of {totalDays}
+            {t.dayOf(currentDay, totalDays)}
           </Text>
 
           <View style={styles.statRow}>
             <View style={[styles.statDot, styles.completedDot]} />
             <Text style={styles.statText}>
-              {completedDays} stories completed
+              {t.storiesCompleted(completedDays)}
             </Text>
           </View>
 
           <View style={styles.statRow}>
             <View style={[styles.statDot, styles.remainingDot]} />
-            <Text style={styles.statText}>{remainingDays} days remaining</Text>
+            <Text style={styles.statText}>
+              {t.daysRemaining(remainingDays)}
+            </Text>
           </View>
         </View>
       </View>
@@ -132,11 +138,9 @@ export function ProgressCard({
         <View style={styles.dividerLine} />
       </View>
 
-      <Text style={styles.quote}>
-        “The people walking in darkness have seen a great light.”
-      </Text>
+      <Text style={styles.quote}>{t.journeyQuote}</Text>
 
-      <Text style={styles.reference}>ISAIAH 9:2</Text>
+      <Text style={styles.reference}>{t.journeyReference}</Text>
     </View>
   );
 }
@@ -218,6 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cream,
   },
   statText: {
+    flexShrink: 1,
     color: COLORS.muted,
     fontFamily: "CrimsonPro_400Regular",
     fontSize: 13,

@@ -23,6 +23,7 @@ import { AdventDoor, DoorState } from "../components/advent/AdventDoor";
 import { ProgressCard } from "../components/advent/ProgressCard";
 import { router } from "expo-router";
 import { useAdvent } from "../state/AdventContext";
+import { getTranslations } from "../i18n/translations";
 
 const COLORS = {
   night: "#070E1B",
@@ -71,7 +72,10 @@ function getDoorState(
 }
 
 export default function HomeScreen() {
-  const { completedDays, currentDay, isHydrated } = useAdvent();
+  const { completedDays, currentDay, isHydrated, selectedLanguage } =
+    useAdvent();
+
+  const t = getTranslations(selectedLanguage);
 
   const [fontsLoaded] = useFonts({
     CrimsonPro_400Regular,
@@ -90,7 +94,7 @@ export default function HomeScreen() {
       return;
     }
 
-    Alert.alert(`Day ${day}`, "Ця історія буде додана на наступному етапі.");
+    Alert.alert(t.storyComingSoonTitle(day), t.storyComingSoon);
   };
 
   return (
@@ -133,13 +137,11 @@ export default function HomeScreen() {
 
           <Text style={styles.headerTitle}>The Promised Savior</Text>
 
-          <Text style={styles.headerSubtitle}>
-            A 24-Day Christmas Scripture Journey
-          </Text>
+          <Text style={styles.headerSubtitle}>{t.appSubtitle}</Text>
 
           <View style={styles.todayJourney}>
             <Text style={styles.todayJourneyText}>
-              TODAY&apos;S JOURNEY · DAY {currentDay} OF 24
+              {t.todaysJourney(currentDay)}
             </Text>
           </View>
         </LinearGradient>
@@ -169,17 +171,19 @@ export default function HomeScreen() {
 
             <View style={styles.heroText}>
               <View style={styles.heroCopy}>
-                <Text style={styles.heroTitle}>
-                  Bethlehem, the City of David
-                </Text>
+                <Text style={styles.heroTitle}>{t.bethlehemTitle}</Text>
 
-                <Text style={styles.heroReference}>LUKE 2:4 · MICAH 5:2</Text>
+                <Text style={styles.heroReference}>
+                  {t.bethlehemReference}
+                </Text>
               </View>
               <Pressable
                 onPress={() => openDay(currentDay)}
                 style={styles.dayChip}
               >
-                <Text style={styles.dayChipText}>Day {currentDay}</Text>
+                <Text style={styles.dayChipText}>
+                  {t.dayLabel(currentDay)}
+                </Text>
                 <Ionicons
                   name="chevron-forward"
                   size={15}
@@ -191,25 +195,27 @@ export default function HomeScreen() {
 
           <View style={styles.calendarHeading}>
             <View>
-              <Text style={styles.sectionEyebrow}>ADVENT CALENDAR</Text>
+              <Text style={styles.sectionEyebrow}>
+                {t.adventCalendar}
+              </Text>
 
-              <Text style={styles.sectionTitle}>December 2026</Text>
+              <Text style={styles.sectionTitle}>{t.december2026}</Text>
             </View>
 
             <View style={styles.legend}>
               <View style={styles.legendRow}>
                 <View style={[styles.legendDoor, styles.legendCompleted]} />
-                <Text style={styles.legendText}>Done</Text>
+                <Text style={styles.legendText}>{t.done}</Text>
               </View>
 
               <View style={styles.legendRow}>
                 <View style={[styles.legendDoor, styles.legendToday]} />
-                <Text style={styles.legendText}>Today</Text>
+                <Text style={styles.legendText}>{t.today}</Text>
               </View>
 
               <View style={styles.legendRow}>
                 <View style={[styles.legendDoor, styles.legendLocked]} />
-                <Text style={styles.legendText}>Locked</Text>
+                <Text style={styles.legendText}>{t.locked}</Text>
               </View>
             </View>
           </View>
@@ -218,11 +224,7 @@ export default function HomeScreen() {
             {DAY_ROWS.map((row, rowIndex) => (
               <View key={rowIndex} style={styles.calendarRow}>
                 {row.map((day) => {
-                  const state = getDoorState(
-                    day,
-                    completedDays,
-                    currentDay,
-                  );
+                  const state = getDoorState(day, completedDays, currentDay);
 
                   return (
                     <AdventDoor
@@ -257,13 +259,15 @@ export default function HomeScreen() {
             >
               <Ionicons name="book-outline" size={21} color={COLORS.night} />
 
-              <Text style={styles.primaryText}>Open Today&apos;s Story</Text>
+              <Text style={styles.primaryText}>
+                {t.openTodaysStory}
+              </Text>
 
               <Ionicons name="arrow-forward" size={20} color={COLORS.night} />
             </LinearGradient>
           </Pressable>
 
-          <Text style={styles.footer}>The Promised Savior · Advent App</Text>
+          <Text style={styles.footer}>{t.footer}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
