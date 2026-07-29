@@ -123,12 +123,7 @@ export default function HomeScreen() {
           ))}
 
           <Pressable
-            onPress={() =>
-              Alert.alert(
-                "Settings",
-                "Екран налаштувань створимо після біблійної історії.",
-              )
-            }
+            onPress={() => router.push("./settings")}
             style={styles.settingsButton}
           >
             <Ionicons name="settings-outline" size={22} color="#FFFFFF" />
